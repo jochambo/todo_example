@@ -8,7 +8,7 @@ Todos
       <h1>Todo List</h1>
 
       <table class="todo-table">
-        {{ page._todos.each do |todo| }}
+        {{ _todos.each do |todo| }}
         <!-- Use params to store the current index -->
         <tr
           e-click="params._index = index"
