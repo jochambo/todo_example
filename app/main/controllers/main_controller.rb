@@ -10,32 +10,36 @@ class MainController < Volt::ModelController
   end
 
   def add_todo
-    _todos << { name: page._new_todo }
+    current_user._todos << { name: page._new_todo }
     page._new_todo = ''
   end
 
   def remove_todo(todo)
-    _todos.delete(todo)
+    current_user._todos.delete(todo)
   end
 
   def current_todo
-    _todos[params._index.or(0).to_i]
+    current_user._todos[params._index.or(0).to_i]
   end
 
   def check_all
-    _todos.each { |todo| todo._completed = true }
+    current_user._todos.each { |todo| todo._completed = true }
   end
 
   def completed
-    _todos.count { |t| t._completed }
+    current_user._todos.count { |t| t._completed }
   end
 
   def incomplete
-    _todos.size - completed
+    current_user._todos.size - completed
   end
 
   def percent_complete
-    (completed / _todos.size.to_f * 100).round
+    (completed / current_user._todos.size.to_f * 100).round
+  end
+
+  def current_user
+    Volt.user
   end
 
   private

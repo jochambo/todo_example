@@ -3,44 +3,46 @@ Todos
 
 <:Body>
   <div class="row">
-    <div class="col-md-4">
+    {{ if current_user }}
+      <div class="col-md-4">
 
-      <h1>{{ _todos.size }} Todo List</h1>
+        <h1>{{ current_user._todos.size }} Todo List</h1>
+        <button class="btn btn-primary" e-click="check_all">Check All ({{ incomplete }})</button>
 
-      <button e-click="check_all">Check All ({{ incomplete }})</button>
+        <div class="progress">
+          <div class="progress-bar" role="progressbar" style="width: {{ percent_complete }}%;">{{ percent_complete }}%</div>
+        </div>
 
-      <div class="progress">
-        <div class="progress-bar" role="progressbar" style="width: {{ percent_complete }}%;">{{ percent_complete }}%</div>
+        <h2>Welcome, {{ current_user._name }} </h2>
+        <table class="todo-table">
+          {{ current_user._todos.each do |todo| }}
+          <!-- Use params to store the current index -->
+          <tr
+            e-click="params._index = index"
+            class="{{ if params._index.or(0).to_i == index }}selected{{ end }}"
+          >
+            <td><input type="checkbox" checked="{{ todo._completed }}"/></td>
+            <td class="{{ if todo._completed }} complete {{ end }}">{{ todo._name }}</td>
+            <td><button e-click="remove_todo(todo)">X</button></td>
+          </tr>
+          {{ end }}
+        </table>
+
+        <form e-submit="add_todo" role="form">
+          <div class="form-group">
+            <label>Todo</label>
+            <input class="form-control" type="text" value="{{ page._new_todo }}">
+          </div>
+        </form>
       </div>
 
-      <table class="todo-table">
-        {{ _todos.each do |todo| }}
-        <!-- Use params to store the current index -->
-        <tr
-          e-click="params._index = index"
-          class="{{ if params._index.or(0).to_i == index }}selected{{ end }}"
-        >
-          <td><input type="checkbox" checked="{{ todo._completed }}"/></td>
-          <td class="{{ if todo._completed }} complete {{ end }}">{{ todo._name }}</td>
-          <td><button e-click="remove_todo(todo)">X</button></td>
-        </tr>
+      <!-- Display extra info -->
+      <div class="col-md-8">
+        {{ if current_todo }}
+        <h2>{{ current_todo._name }}</h2>
+
+        <textarea>{{ current_todo._description }}</textarea>
         {{ end }}
-      </table>
-
-      <form e-submit="add_todo" role="form">
-        <div class="form-group">
-          <label>Todo</label>
-          <input class="form-control" type="text" value="{{ page._new_todo }}">
-        </div>
-      </form>
-    </div>
-
-    <!-- Display extra info -->
-    <div class="col-md-8">
-      {{ if current_todo }}
-      <h2>{{ current_todo._name }}</h2>
-
-      <textarea>{{ current_todo._description }}</textarea>
-      {{ end }}
-    </div>
+      </div>
+    {{ end }}
   </div>
